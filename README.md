@@ -9,14 +9,19 @@ The gap: no lightweight, offline tool exists that combines fast ML filtering wit
 
 ## Architecture
 ```mermaid
-flowchart LR
-    A[Log stream (1000 logs)] --> B[Stage 1: Isolation Forest + StandardScaler]
-    B --> C[normal logs (99%)\ndiscarded silently]
-    B --> D[anomalies flagged\nconfidence scoring]
-    D --> E[LOW confidence\nlogged, LLM skipped]
-    D --> F[MEDIUM/HIGH confidence\nStage 2]
-    F --> G[Ollama qwen2.5:1.5b\n2-sentence incident summary generated]
-    G --> H[anomaly_report.jsonl written]
+flowchart TD
+    A[Log stream 1000 logs] --> B[Stage 1: Isolation Forest and StandardScaler]
+    B --> C[Normal logs 99 percent - discarded silently]
+    B --> D[Anomalies flagged - confidence scoring applied]
+    D --> E[LOW confidence - logged but LLM skipped]
+    D --> F[MEDIUM or HIGH confidence - escalate to Stage 2]
+    F --> G[Stage 2: Ollama qwen2.5 1.5b - 2-sentence incident summary]
+    G --> H[anomaly report jsonl written]
+
+    style C fill:#4a4a4a,color:#ccc
+    style E fill:#b87333,color:#fff
+    style H fill:#22aa44,color:#fff
+    style G fill:#1a6ea8,color:#fff
 ```
 
 ## Confidence scoring system
