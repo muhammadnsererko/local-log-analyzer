@@ -111,6 +111,29 @@ ollama pull qwen2.5:1.5b
 python main.py
 ```
 
+## Who this is for
+
+### Real-world scenarios
+
+**E-commerce companies — high traffic incident detection**
+During Black Friday, an e-commerce platform's payment service starts throwing intermittent 503 errors with elevated response times. The log analyzer flags it as HIGH confidence within seconds of the first anomalous logs appearing, generates a 2-sentence incident summary pointing to the payment processing queue, and writes it to the report — before any customer notices checkout is failing.
+
+**Startups — no dedicated DevOps team**
+A 5-person startup cannot afford Datadog or Splunk. They run this pipeline on their existing server. The Isolation Forest trains on their normal traffic patterns and flags deviations automatically. When their database starts showing elevated CPU and error counts at 3am, the pipeline catches it and logs the incident — no human monitoring required overnight.
+
+**Healthcare and financial services — data privacy requirements**
+A healthcare or financial services company needs log analysis but cannot send infrastructure logs to OpenAI or any external API — those logs contain patient identifiers, account numbers, and internal service architecture details. This pipeline runs entirely locally. The LLM never phones home. Full compliance with data residency requirements.
+
+### This project is a fit if you are
+
+- A startup that cannot afford enterprise log monitoring tools like Datadog or Splunk
+- A company with data privacy requirements that prevent sending logs to cloud APIs
+- A DevOps or platform engineering team that wants ML-powered anomaly detection without cloud costs
+- Any engineering team running services on constrained infrastructure that needs incident detection without a dedicated monitoring team
+
+### Deployment
+Point log_generator.py at your real log source and adjust the feature columns to match your log schema. The Isolation Forest trains on your actual traffic patterns in under 400ms. Only genuine anomalies get escalated to the LLM — everything else is filtered in milliseconds at over 1800 logs per second.
+
 ## File structure
 - `log_generator.py` — generates 1000 synthetic logs with three tiers of injected anomalies (severe, moderate, mild)
 - `analyzer.py` — two-stage pipeline: Isolation Forest filter with confidence scoring + Ollama LLM escalation
